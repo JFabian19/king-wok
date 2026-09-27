@@ -821,60 +821,73 @@ footer > a { color: var(--gold); text-decoration: none; text-align: right; font:
   .bag-button { width: 44px; padding: 0; justify-content: center; }
   .bag-button b { position: absolute; top: -7px; right: -7px; }
   .hero {
-    min-height: auto;
-    height: auto;
-    max-height: none;
+    min-height: 580px;
+    height: calc(100svh - 74px);
+    max-height: 800px;
+    position: relative;
+    display: flex;
     flex-direction: column;
+    justify-content: flex-end;
     align-items: stretch;
-    justify-content: flex-start;
     padding-top: 0;
+    overflow: hidden;
     background: #140d0b;
   }
   .hero > img {
-    position: relative;
-    inset: auto;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-height: 48vh;
-    object-fit: contain;
-    object-position: center top;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
     opacity: 1;
     z-index: 1;
-    background: radial-gradient(circle at center, #c91f28 0%, #170d0a 85%);
   }
   .hero-shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(16, 14, 13, 0.2) 0%, rgba(16, 14, 13, 0.6) 42%, rgba(16, 14, 13, 0.98) 70%, #100e0d 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(10, 8, 7, 0.25) 0%,
+      rgba(10, 8, 7, 0.15) 35%,
+      rgba(10, 8, 7, 0.72) 58%,
+      rgba(10, 8, 7, 0.96) 82%,
+      #100e0d 100%
+    );
     z-index: 2;
   }
   .hero-copy {
     position: relative;
     z-index: 3;
     width: auto;
-    margin: -40px 18px 0;
-    padding-bottom: 60px;
+    margin: 0 20px;
+    padding-bottom: 74px;
     text-align: left;
   }
-  .hero h1 { font-size: clamp(52px, 16vw, 76px); margin: 10px 0 8px; line-height: 0.85; }
-  .hero-lead { font-size: 14px; line-height: 1.5; margin-bottom: 20px; max-width: 100%; color: #ede3d7; }
-  .primary-cta { width: 100%; justify-content: center; min-height: 48px; }
+  .hero h1 { font-size: clamp(58px, 18vw, 84px); margin: 12px 0 8px; line-height: 0.82; }
+  .hero-lead { font-size: 14.5px; line-height: 1.5; margin-bottom: 22px; max-width: 95%; color: #ede3d7; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7); }
+  .primary-cta { width: 100%; justify-content: center; min-height: 50px; font-size: 13px; }
   .hero-stamp {
-    width: 68px;
-    height: 68px;
-    right: 14px;
-    top: 14px;
-    padding: 6px;
+    width: 76px;
+    height: 76px;
+    right: 16px;
+    top: 18px;
+    padding: 7px;
     z-index: 4;
-    background: rgba(18, 16, 15, 0.85);
+    background: rgba(18, 16, 15, 0.82);
+    border: 2px solid rgba(229, 170, 64, 0.85);
   }
   .ticker {
-    position: relative;
+    position: absolute;
     z-index: 4;
+    bottom: 0;
+    left: 0;
+    right: 0;
     justify-content: flex-start;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    font-size: 13px;
+    font-size: 13.5px;
     padding: 10px 16px;
   }
   .ticker::-webkit-scrollbar { display: none; }
