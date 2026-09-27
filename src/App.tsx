@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock,
   Flame,
+  Image,
   LocateFixed,
   Minus,
   Motorbike,
@@ -407,6 +408,19 @@ export default function App() {
                           {isDishBlocked && <span className="dish-badge-closed">Fuera de horario</span>}
                           <h3>{dish.nombre}</h3>
                           {dish.descripcion && <p>{dish.descripcion}</p>}
+                        </div>
+                        <div
+                          className="dish-media-slot"
+                          onClick={() => !isDishBlocked && openDishDialog(dish)}
+                          role="button"
+                          tabIndex={isDishBlocked ? -1 : 0}
+                          title={isDishBlocked ? "Plato fuera de horario" : `Personalizar ${dish.nombre}`}
+                          aria-label={`Espacio de imagen para ${dish.nombre}`}
+                        >
+                          <div className="dish-media-placeholder">
+                            <Image size={18} strokeWidth={1.8} />
+                            <span className="dish-media-text">Acá va imagen</span>
+                          </div>
                         </div>
                         <div className="dish-action">
                           <strong>{money(dish.precio)}</strong>

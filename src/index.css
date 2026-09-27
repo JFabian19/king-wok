@@ -386,11 +386,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .category-heading b { grid-column: 2; grid-row: 1/span 2; color: transparent; -webkit-text-stroke: 1px #c9beae; font: 400 clamp(70px, 10vw, 128px)/.75 "Bebas Neue"; }
 .dish-grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
 .dish-card {
-  min-height: 142px;
-  padding: 24px 20px;
+  min-height: 138px;
+  padding: 22px 20px;
   display: grid;
-  grid-template-columns: 36px 1fr auto;
-  gap: 18px;
+  grid-template-columns: 32px 1fr 92px auto;
+  gap: 16px;
   align-items: center;
   border-bottom: 1px solid var(--line);
   position: relative;
@@ -419,6 +419,67 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .dish-badge svg { color: var(--red); }
 .dish-copy h3 { margin: 0; font: 400 clamp(24px, 2.2vw, 32px)/1.05 "Bebas Neue"; letter-spacing: .025em; }
 .dish-copy p { margin: 7px 0 0; color: #776e63; font-size: 12px; line-height: 1.55; }
+
+.dish-media-slot {
+  width: 92px;
+  height: 92px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  border: 1.5px dashed #c8baa8;
+  border-radius: 8px;
+  background: #ede6d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.dish-media-slot:hover {
+  border-color: var(--red);
+  background: #e6dcce;
+  transform: scale(1.02);
+}
+.dish-media-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px;
+  text-align: center;
+  color: #8c7e6e;
+  user-select: none;
+}
+.dish-media-placeholder svg {
+  color: #9c8e7f;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.dish-media-slot:hover .dish-media-placeholder svg {
+  color: var(--red);
+  transform: scale(1.1);
+}
+.dish-media-text {
+  font-size: 9.5px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #7d7061;
+}
+.dish-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.dish-card.menu-card-disabled .dish-media-slot {
+  opacity: 0.65;
+  cursor: not-allowed;
+  border-style: solid;
+}
 .dish-action { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; text-align: right; }
 .dish-action strong { color: var(--red); white-space: nowrap; font: 400 24px "Bebas Neue"; }
 .dish-action button {
@@ -1223,8 +1284,31 @@ footer .brand-logo { width: 58px; height: 58px; }
   .category-panel { padding-top: 48px; scroll-margin-top: 61px; }
   .category-heading b { display: none; }
   .dish-grid { grid-template-columns: 1fr; }
-  .dish-card { min-height: 128px; padding: 20px 6px; grid-template-columns: 27px 1fr auto; gap: 10px; }
+  .dish-card {
+    min-height: 114px;
+    padding: 16px 8px;
+    grid-template-columns: 24px 1fr 72px auto;
+    gap: 10px;
+  }
   .dish-card:nth-child(odd) { border-right: 0; }
+  .dish-media-slot {
+    width: 72px;
+    height: 72px;
+    aspect-ratio: 1 / 1;
+    border-radius: 6px;
+  }
+  .dish-media-placeholder {
+    padding: 4px;
+    gap: 3px;
+  }
+  .dish-media-placeholder svg {
+    width: 16px;
+    height: 16px;
+  }
+  .dish-media-text {
+    font-size: 8.5px;
+    line-height: 1.1;
+  }
   .dish-copy h3 { font-size: 25px; }
   .dish-action strong { font-size: 21px; }
   .order-banner { padding: 38px 22px; flex-wrap: wrap; }
@@ -1292,7 +1376,23 @@ footer .brand-logo { width: 58px; height: 58px; }
 
 @media (max-width: 390px) {
   .brand span { display: none; }
-  .dish-card { grid-template-columns: 22px 1fr auto; }
+  .dish-card {
+    padding: 14px 6px;
+    grid-template-columns: 20px 1fr 64px auto;
+    gap: 8px;
+  }
+  .dish-media-slot {
+    width: 64px;
+    height: 64px;
+    aspect-ratio: 1 / 1;
+  }
+  .dish-media-placeholder svg {
+    width: 15px;
+    height: 15px;
+  }
+  .dish-media-text {
+    font-size: 8px;
+  }
   .dish-action button { width: 38px; height: 38px; }
   .cart-item { grid-template-columns: minmax(0, 1fr) auto; }
   .cart-item .remove { grid-column: 2; }

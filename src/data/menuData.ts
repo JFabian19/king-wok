@@ -4,6 +4,7 @@ export interface Dish {
   precio: string;
   destacado?: boolean;
   esMenu?: boolean;
+  imagen?: string;
 }
 
 export interface Category {
