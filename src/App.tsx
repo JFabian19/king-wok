@@ -398,17 +398,6 @@ export default function App() {
                         className={`dish-card ${dish.destacado ? "featured" : ""} ${isDishBlocked ? "menu-card-disabled" : ""}`}
                         key={`${dish.nombre}-${dish.descripcion ?? ""}-${dishIndex}`}
                       >
-                        <div className="dish-number">{String(dishIndex + 1).padStart(2, "0")}</div>
-                        <div className="dish-copy">
-                          {dish.destacado && (
-                            <span className="dish-badge">
-                              <Flame size={11} /> Favorito de la casa
-                            </span>
-                          )}
-                          {isDishBlocked && <span className="dish-badge-closed">Fuera de horario</span>}
-                          <h3>{dish.nombre}</h3>
-                          {dish.descripcion && <p>{dish.descripcion}</p>}
-                        </div>
                         <div
                           className="dish-media-slot"
                           onClick={() => !isDishBlocked && openDishDialog(dish)}
@@ -417,21 +406,39 @@ export default function App() {
                           title={isDishBlocked ? "Plato fuera de horario" : `Personalizar ${dish.nombre}`}
                           aria-label={`Espacio de imagen para ${dish.nombre}`}
                         >
-                          <div className="dish-media-placeholder">
-                            <Image size={18} strokeWidth={1.8} />
-                            <span className="dish-media-text">Acá va imagen</span>
-                          </div>
+                          {dish.imagen ? (
+                            <img src={dish.imagen} alt={dish.nombre} className="dish-img" />
+                          ) : (
+                            <div className="dish-media-placeholder">
+                              <Image size={24} strokeWidth={1.75} />
+                              <span className="dish-media-text">Acá va imagen</span>
+                            </div>
+                          )}
+                          <span className="dish-number-tag">{String(dishIndex + 1).padStart(2, "0")}</span>
+                          {dish.destacado && (
+                            <span className="dish-badge-overlay">
+                              <Flame size={11} /> Favorito
+                            </span>
+                          )}
+                          {isDishBlocked && <span className="dish-badge-closed-overlay">Fuera de horario</span>}
                         </div>
-                        <div className="dish-action">
-                          <strong>{money(dish.precio)}</strong>
-                          <button
-                            onClick={() => openDishDialog(dish)}
-                            className={isDishBlocked ? "btn-disabled" : ""}
-                            aria-label={isDishBlocked ? `${dish.nombre} no disponible por horario` : `Agregar ${dish.nombre} al pedido`}
-                            title={isDishBlocked ? "El Menú solo está disponible de lunes a sábado hasta las 3:00 PM" : undefined}
-                          >
-                            {isDishBlocked ? <Clock size={18} /> : <Plus size={18} />}
-                          </button>
+
+                        <div className="dish-content">
+                          <div className="dish-info">
+                            <h3 className="dish-title">{dish.nombre}</h3>
+                            {dish.descripcion && <p className="dish-desc">{dish.descripcion}</p>}
+                          </div>
+                          <div className="dish-footer">
+                            <strong className="dish-price">{money(dish.precio)}</strong>
+                            <button
+                              onClick={() => openDishDialog(dish)}
+                              className={`dish-add-btn ${isDishBlocked ? "btn-disabled" : ""}`}
+                              aria-label={isDishBlocked ? `${dish.nombre} no disponible por horario` : `Agregar ${dish.nombre} al pedido`}
+                              title={isDishBlocked ? "El Menú solo está disponible de lunes a sábado hasta las 3:00 PM" : undefined}
+                            >
+                              {isDishBlocked ? <Clock size={16} /> : <Plus size={18} strokeWidth={2.4} />}
+                            </button>
+                          </div>
                         </div>
                       </article>
                     );
