@@ -72,6 +72,15 @@ export default function App() {
   const [menuNoticeModalOpen, setMenuNoticeModalOpen] = useState(false);
   const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | null>(null);
   const categoryButtons = useRef<Record<string, HTMLButtonElement | null>>({});
+  const categoryNavRef = useRef<HTMLElement | null>(null);
+  const isFirstCategoryNavScroll = useRef(true);
+
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -100,7 +109,7 @@ export default function App() {
         if (section && section.offsetTop <= activationLine) nextCategory = category.id;
       });
 
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24) {
+      if (window.scrollY > 100 && window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 24) {
         nextCategory = DEFAULT_MENU_DATA.at(-1)?.id ?? nextCategory;
       }
 
@@ -117,10 +126,20 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    categoryButtons.current[activeCategory]?.scrollIntoView({
+    if (isFirstCategoryNavScroll.current) {
+      isFirstCategoryNavScroll.current = false;
+      return;
+    }
+
+    const nav = categoryNavRef.current;
+    const button = categoryButtons.current[activeCategory];
+    if (!nav || !button) return;
+
+    const targetLeft =
+      button.offsetLeft - nav.clientWidth / 2 + button.clientWidth / 2;
+    nav.scrollTo({
+      left: Math.max(0, targetLeft),
       behavior: "smooth",
-      block: "nearest",
-      inline: "center",
     });
   }, [activeCategory]);
 
@@ -345,7 +364,7 @@ export default function App() {
             <button className="dock-logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Volver al inicio de la carta">
               <img src="/king-wok-logo.webp" alt="" />
             </button>
-            <nav className="category-nav" aria-label="Categorías de la carta">
+            <nav ref={categoryNavRef} className="category-nav" aria-label="Categorías de la carta">
               {DEFAULT_MENU_DATA.map((category, index) => (
                 <button
                   key={category.id}
