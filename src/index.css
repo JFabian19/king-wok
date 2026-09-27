@@ -119,30 +119,43 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: var(--gold);
-  letter-spacing: 0.18em;
-  font-size: 12px;
+  color: #ffd891;
+  background: rgba(18, 14, 12, 0.72);
+  border: 1px solid rgba(229, 170, 64, 0.45);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(229, 170, 64, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.18em;
   margin: 0;
   text-transform: uppercase;
+  width: fit-content;
+}
+.eyebrow svg {
+  color: #ff4d2e;
+  filter: drop-shadow(0 0 6px rgba(255, 77, 46, 0.8));
 }
 .hero h1 {
-  margin: 17px 0 14px;
-  font: 400 clamp(76px, 11vw, 156px)/0.78 "Bebas Neue", sans-serif;
+  margin: 14px 0 10px;
+  font: 400 clamp(74px, 10.5vw, 145px)/0.8 "Bebas Neue", sans-serif;
   letter-spacing: -0.01em;
   color: #ffffff;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.9);
 }
 .hero h1 em {
-  color: var(--red);
+  color: #e6232f;
   font-style: normal;
-  text-shadow: 2px 2px 0 var(--gold);
+  text-shadow: 2px 2px 0 var(--gold), 0 4px 20px rgba(230, 35, 47, 0.6);
 }
 .hero-lead {
   max-width: 510px;
   margin: 0 0 30px;
-  color: #e1d7cb;
+  color: #f4ede4;
   font-size: clamp(16px, 1.4vw, 19px);
   line-height: 1.7;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 .primary-cta {
   border: 0;
@@ -168,54 +181,125 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 }
 .hero-stamp {
   position: absolute;
-  z-index: 2;
-  right: clamp(22px, 5vw, 65px);
-  top: clamp(28px, 5vw, 55px);
-  width: clamp(95px, 12vw, 135px);
-  height: clamp(95px, 12vw, 135px);
-  border: 2px solid rgba(229, 170, 64, 0.75);
+  z-index: 4;
+  right: clamp(20px, 4.5vw, 60px);
+  top: clamp(24px, 4vw, 50px);
+  width: clamp(86px, 11vw, 125px);
+  height: clamp(86px, 11vw, 125px);
+  border: 2px solid rgba(229, 170, 64, 0.85);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(18, 16, 15, 0.75);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(229, 170, 64, 0.25);
-  backdrop-filter: blur(8px);
-  padding: 12px;
+  background: rgba(18, 14, 13, 0.85);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 0 3px rgba(229, 170, 64, 0.25), inset 0 0 18px rgba(229, 170, 64, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 10px;
   transform: rotate(-6deg);
-  transition: transform 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
 }
 .hero-stamp:hover {
-  transform: rotate(0deg) scale(1.05);
+  transform: rotate(0deg) scale(1.08);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.8), 0 0 0 4px rgba(229, 170, 64, 0.45), inset 0 0 22px rgba(229, 170, 64, 0.4);
 }
 .hero-stamp-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   border-radius: 50%;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
+
+.hero-scroll-cue {
+  position: absolute;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ffd687;
+  background: rgba(18, 14, 12, 0.75);
+  border: 1px solid rgba(229, 170, 64, 0.4);
+  backdrop-filter: blur(8px);
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font: 700 10.5px/1 "Manrope", sans-serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  animation: cueBounce 2.5s ease-in-out infinite;
+}
+.hero-scroll-cue svg {
+  color: var(--gold);
+  animation: arrowNudge 1.5s ease-in-out infinite alternate;
+}
+@keyframes cueBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-5px); }
+}
+@keyframes arrowNudge {
+  0% { transform: translateY(-2px); }
+  100% { transform: translateY(2px); }
+}
+
+/* Infinity Marquee Ticker */
 .ticker {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   bottom: 0;
   left: 0;
   right: 0;
-  min-height: 45px;
+  height: 44px;
   background: var(--gold);
-  color: #15110c;
+  background: linear-gradient(90deg, #d89e36 0%, #ebb64c 50%, #d89e36 100%);
+  color: #120e0a;
+  overflow: hidden;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  gap: 25px;
-  padding: 8px 24px;
-  font: 400 17px "Bebas Neue";
-  letter-spacing: 0.14em;
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.45);
+  user-select: none;
 }
-.ticker i {
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tickerMarquee 26s linear infinite;
+  will-change: transform;
+}
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
+}
+.ticker-group {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding-right: 26px;
+  white-space: nowrap;
+  font: 400 17px "Bebas Neue", sans-serif;
+  letter-spacing: 0.15em;
+  flex-shrink: 0;
+}
+.ticker-group span {
+  display: inline-block;
+  font-weight: 500;
+}
+.ticker-group i {
   color: var(--red);
   font: 900 18px "Noto Serif SC", serif;
   font-style: normal;
+  display: inline-block;
+}
+
+@keyframes tickerMarquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
 }
 
 .menu { width: 100%; padding-top: 58px; }
@@ -893,20 +977,25 @@ footer > a { color: var(--gold); text-decoration: none; text-align: right; font:
     background: rgba(18, 16, 15, 0.85);
     border: 2px solid rgba(229, 170, 64, 0.9);
   }
-  .ticker {
-    position: absolute;
-    z-index: 4;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    justify-content: flex-start;
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
-    font-size: 13.5px;
-    padding: 10px 16px;
+  .hero-scroll-cue {
+    bottom: 48px;
+    font-size: 9.5px;
+    padding: 4px 11px;
   }
-  .ticker::-webkit-scrollbar { display: none; }
+  .ticker {
+    height: 38px;
+  }
+  .ticker-track {
+    animation-duration: 20s;
+  }
+  .ticker-group {
+    font-size: 14.5px;
+    gap: 18px;
+    padding-right: 18px;
+  }
+  .ticker-group i {
+    font-size: 15px;
+  }
   .menu { padding-top: 36px; }
   .menu-intro { width: min(100% - 28px, 620px); padding-bottom: 34px; grid-template-columns: 100px 1fr; gap: 20px 15px; align-items: center; }
   .menu-logo { width: 100px; height: 100px; }

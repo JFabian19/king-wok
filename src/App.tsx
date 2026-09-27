@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   AlertTriangle,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -283,19 +284,41 @@ export default function App() {
           id="inicio"
           onClick={() => document.getElementById("carta")?.scrollIntoView({ behavior: "smooth" })}
           style={{ cursor: "pointer" }}
+          aria-label="King Wok - Portada principal, toca para ir a la carta"
         >
           <img src="/king-wok-hero.png" alt="King Wok - El Wok Manda" />
           <div className="hero-shade" />
           <div className="hero-copy">
-            <p className="eyebrow"><Flame size={15} /> SABOR CHIFA · FUEGO DE VERDAD</p>
+            <div className="eyebrow"><Flame size={14} /><span>SABOR CHIFA · FUEGO DE VERDAD</span></div>
             <h1>EL WOK<br /><em>MANDA.</em></h1>
             <p className="hero-lead">Chaufa, tallarines y clásicos del barrio hechos al instante, con fuego alto y corazón.</p>
           </div>
-          <div className="hero-stamp" title="King Wok">
+          <div className="hero-stamp" title="King Wok - Chifa Oriental Nikkei">
             <img src="/king-wok-logo.png" alt="King Wok Logo" className="hero-stamp-img" />
           </div>
-          <div className="ticker">
-            <span>KING WOK</span><i>火</i><span>PIDE AL 935 661 827</span><i>火</i><span>CHIFA · BROASTER · SOPAS</span>
+          <div className="hero-scroll-cue">
+            <span>TOCA PARA VER LA CARTA</span>
+            <ChevronDown size={14} />
+          </div>
+          <div className="ticker" aria-label="Información y especialidades de King Wok">
+            <div className="ticker-track">
+              <div className="ticker-group">
+                <span>KING WOK</span><i>火</i>
+                <span>PIDE AL 935 661 827</span><i>火</i>
+                <span>CHIFA · BROASTER · SOPAS</span><i>火</i>
+                <span>COCINA AL FUEGO</span><i>火</i>
+                <span>SABOR ORIENTAL NIKKEI</span><i>火</i>
+                <span>ESPECIALIDADES AL WOK</span><i>火</i>
+              </div>
+              <div className="ticker-group" aria-hidden="true">
+                <span>KING WOK</span><i>火</i>
+                <span>PIDE AL 935 661 827</span><i>火</i>
+                <span>CHIFA · BROASTER · SOPAS</span><i>火</i>
+                <span>COCINA AL FUEGO</span><i>火</i>
+                <span>SABOR ORIENTAL NIKKEI</span><i>火</i>
+                <span>ESPECIALIDADES AL WOK</span><i>火</i>
+              </div>
+            </div>
           </div>
         </section>
 
