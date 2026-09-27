@@ -278,16 +278,18 @@ export default function App() {
       </header>
 
       <main>
-        <section className="hero" id="inicio">
+        <section
+          className="hero"
+          id="inicio"
+          onClick={() => document.getElementById("carta")?.scrollIntoView({ behavior: "smooth" })}
+          style={{ cursor: "pointer" }}
+        >
           <img src="/king-wok-hero.png" alt="King Wok - El Wok Manda" />
           <div className="hero-shade" />
           <div className="hero-copy">
             <p className="eyebrow"><Flame size={15} /> SABOR CHIFA · FUEGO DE VERDAD</p>
             <h1>EL WOK<br /><em>MANDA.</em></h1>
             <p className="hero-lead">Chaufa, tallarines y clásicos del barrio hechos al instante, con fuego alto y corazón.</p>
-            <button className="primary-cta" onClick={() => document.getElementById("carta")?.scrollIntoView({ behavior: "smooth" })}>
-              VER LA CARTA <ChevronRight size={18} />
-            </button>
           </div>
           <div className="hero-stamp" title="King Wok">
             <img src="/king-wok-logo.png" alt="King Wok Logo" className="hero-stamp-img" />
