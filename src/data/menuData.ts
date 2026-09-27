@@ -3,6 +3,7 @@ export interface Dish {
   descripcion?: string;
   precio: string;
   destacado?: boolean;
+  esMenu?: boolean;
 }
 
 export interface Category {
@@ -10,9 +11,36 @@ export interface Category {
   nombre: string;
   sello: string;
   items: Dish[];
+  esMenu?: boolean;
 }
 
 export const DEFAULT_MENU_DATA: Category[] = [
+  {
+    id: "menu",
+    nombre: "Menú",
+    sello: "Hasta las 3 PM",
+    esMenu: true,
+    items: [
+      {
+        nombre: "Chaufa",
+        descripcion: "Arroz chaufa al wok clásico con trozos de pollo, huevo y cebollita china",
+        precio: "15",
+        esMenu: true,
+      },
+      {
+        nombre: "Aeropuerto",
+        descripcion: "Chaufa al wok salteado con fideos y frejolito chino",
+        precio: "15",
+        esMenu: true,
+      },
+      {
+        nombre: "Tallarín con verduras",
+        descripcion: "Tallarines salteados al wok con verduras frescas de temporada y pollo",
+        precio: "15",
+        esMenu: true,
+      },
+    ],
+  },
   {
     id: "broaster",
     nombre: "Broastería",
@@ -86,7 +114,7 @@ export const DEFAULT_MENU_DATA: Category[] = [
     sello: "Fuego alto",
     items: [
       { nombre: "Lomo saltado montado", precio: "27", destacado: true },
-      { nombre: "Lomo de carne", precio: "20" },
+      { nombre: "Lomo de carne", precio: "22" },
       { nombre: "Lomo de pollo", precio: "20" },
       { nombre: "Lomo de pollo y carne", precio: "25" },
     ],

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=Noto+Serif+SC:wght@700;900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -79,6 +79,143 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background: var(--red);
   color: white;
   font-size: 11px;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 650px;
+  height: calc(100vh - 92px);
+  max-height: 880px;
+  position: relative;
+  background: #100e0d;
+  color: white;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  opacity: 0.95;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(12, 10, 9, 0.96) 0%, rgba(12, 10, 9, 0.82) 38%, rgba(12, 10, 9, 0.3) 68%, rgba(12, 10, 9, 0.5) 100%),
+              linear-gradient(0deg, rgba(0, 0, 0, 0.55), transparent 45%);
+}
+.hero-copy {
+  position: relative;
+  z-index: 2;
+  width: min(720px, 88%);
+  margin-left: clamp(20px, 8vw, 130px);
+  padding-bottom: 70px;
+}
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  letter-spacing: 0.18em;
+  font-size: 12px;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+}
+.hero h1 {
+  margin: 17px 0 14px;
+  font: 400 clamp(76px, 11vw, 156px)/0.78 "Bebas Neue", sans-serif;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+.hero h1 em {
+  color: var(--red);
+  font-style: normal;
+  text-shadow: 2px 2px 0 var(--gold);
+}
+.hero-lead {
+  max-width: 510px;
+  margin: 0 0 30px;
+  color: #e1d7cb;
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.7;
+}
+.primary-cta {
+  border: 0;
+  border-radius: 3px;
+  background: var(--red);
+  color: white;
+  min-height: 52px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  box-shadow: 5px 5px 0 var(--gold);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+}
+.primary-cta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--gold);
+  background: #a9151e;
+}
+.hero-stamp {
+  position: absolute;
+  z-index: 2;
+  right: clamp(22px, 5vw, 65px);
+  top: clamp(28px, 5vw, 55px);
+  width: clamp(95px, 12vw, 135px);
+  height: clamp(95px, 12vw, 135px);
+  border: 2px solid rgba(229, 170, 64, 0.75);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 16, 15, 0.75);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(229, 170, 64, 0.25);
+  backdrop-filter: blur(8px);
+  padding: 12px;
+  transform: rotate(-6deg);
+  transition: transform 0.3s ease;
+}
+.hero-stamp:hover {
+  transform: rotate(0deg) scale(1.05);
+}
+.hero-stamp-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+.ticker {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 45px;
+  background: var(--gold);
+  color: #15110c;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 25px;
+  padding: 8px 24px;
+  font: 400 17px "Bebas Neue";
+  letter-spacing: 0.14em;
+}
+.ticker i {
+  color: var(--red);
+  font: 900 18px "Noto Serif SC", serif;
+  font-style: normal;
 }
 
 .menu { width: 100%; padding-top: 58px; }
@@ -229,7 +366,7 @@ footer {
   min-height: 230px;
   padding: 55px clamp(24px, 8vw, 120px);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1.2fr 1fr;
   align-items: center;
   gap: 24px;
   background: #11100f;
@@ -238,6 +375,290 @@ footer {
 footer .brand-logo { width: 58px; height: 58px; }
 footer p { color: #aaa096; text-align: center; }
 footer > a { color: var(--gold); text-decoration: none; text-align: right; font: 400 22px "Bebas Neue"; letter-spacing: .08em; }
+
+.footer-slogan-wrap {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 16px;
+  border: 1px dashed rgba(229, 170, 64, 0.35);
+  border-radius: 4px;
+  background: rgba(229, 170, 64, 0.05);
+}
+.footer-slogan-tag {
+  display: inline-block;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.footer-slogan-text {
+  margin: 0;
+  color: #ffffff !important;
+  font: 400 clamp(20px, 2.2vw, 28px)/1.1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Barra Hecho por Tu Carta */
+.tu-carta-bar {
+  background: #0b409c;
+  background: linear-gradient(135deg, #072559 0%, #0056b3 50%, #0070da 100%);
+  color: #ffffff;
+  padding: 16px 20px;
+  border-top: 2px solid #38bdf8;
+  box-shadow: 0 -4px 20px rgba(0, 30, 80, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tu-carta-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.tu-carta-label {
+  color: #e0f2fe;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.tu-carta-pill {
+  background: #ffffff;
+  color: #0b409c;
+  padding: 6px 18px;
+  border-radius: 9999px;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+  border: 2px solid #bae6fd;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tu-carta-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Letrero del Menú del Día */
+.menu-letrero {
+  margin-bottom: 28px;
+  padding: 24px 28px;
+  background: #181513;
+  color: white;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+  border-left: 6px solid var(--red);
+}
+.menu-letrero.closed {
+  border: 1px solid #5a2022;
+  border-left: 6px solid #e02424;
+  background: linear-gradient(180deg, #201314 0%, #170e0f 100%);
+}
+.menu-letrero.open {
+  border: 1px solid #1c4528;
+  border-left: 6px solid #16a34a;
+  background: linear-gradient(180deg, #122116 0%, #0d1710 100%);
+}
+.menu-letrero-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.menu-letrero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.menu-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.menu-status-badge.status-open {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+  border: 1px solid #22c55e;
+}
+.menu-status-badge.status-closed {
+  background: rgba(239, 68, 68, 0.18);
+  color: #fca5a5;
+  border: 1px solid #ef4444;
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.status-open .status-dot {
+  box-shadow: 0 0 10px #4ade80;
+  animation: pulseDot 2s infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(1.3); }
+}
+.menu-letrero-body h3 {
+  margin: 0 0 8px;
+  font: 400 clamp(24px, 3.2vw, 36px)/1.08 "Bebas Neue", sans-serif;
+  letter-spacing: 0.04em;
+  color: #fffaf0;
+}
+.menu-letrero.closed .menu-letrero-body h3 {
+  color: #fecaca;
+}
+.menu-letrero-body p {
+  margin: 0;
+  color: #cfc4b5;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.menu-letrero-footer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: #a89d8f;
+}
+.menu-letrero-footer strong {
+  color: #ffffff;
+}
+.menu-closed-alert {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fca5a5;
+  font-weight: 800;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Estado bloqueado de platos del menú */
+.dish-card.menu-card-disabled {
+  background: #ede6d8;
+  opacity: 0.88;
+}
+.dish-badge-closed {
+  display: inline-block;
+  margin-bottom: 7px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: #b91c1c;
+  color: white;
+  text-transform: uppercase;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.dish-action button.btn-disabled {
+  border-color: #baa996;
+  background: #dbd0bf;
+  color: #7a6e5e;
+  cursor: not-allowed;
+}
+.dish-action button.btn-disabled:hover {
+  transform: none;
+  background: #baa996;
+  border-color: #8c7d6c;
+  color: #2b2520;
+}
+
+/* Alerta en el carrito */
+.cart-warning-box {
+  margin: 16px 0 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 2px;
+  color: #991b1b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.cart-warning-box strong {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #b91c1c;
+}
+.cart-warning-box p {
+  margin: 0;
+  color: #7f1d1d;
+}
+.whatsapp-button.btn-disabled,
+.whatsapp-button:disabled {
+  background: #645a50 !important;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* Diálogo de aviso de menú cerrado */
+.menu-notice-dialog {
+  border-top-color: var(--red);
+}
+.notice-time-banner {
+  margin: 18px 0 22px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #181513;
+  color: white;
+  border-left: 4px solid var(--red);
+  border-radius: 2px;
+}
+.notice-time-banner strong {
+  display: block;
+  font-size: 13px;
+  color: var(--gold);
+}
+.notice-time-banner p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #cfc4b5;
+}
+.notice-rule {
+  margin: 0 0 14px;
+  color: #312b26;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.notice-sub {
+  margin: 0 0 24px;
+  color: #63584e;
+  font-size: 13px;
+  line-height: 1.6;
+}
 
 .floating-cart {
   width: min(460px, calc(100% - 28px));
@@ -399,6 +820,15 @@ footer > a { color: var(--gold); text-decoration: none; text-align: right; font:
   .brand small, .phone-link, .bag-button span { display: none; }
   .bag-button { width: 44px; padding: 0; justify-content: center; }
   .bag-button b { position: absolute; top: -7px; right: -7px; }
+  .hero { min-height: 620px; height: calc(100svh - 74px); max-height: 760px; align-items: flex-end; }
+  .hero > img { object-position: 72% center; }
+  .hero-shade { background: linear-gradient(0deg, rgba(10, 8, 7, 0.98) 12%, rgba(10, 8, 7, 0.75) 50%, rgba(10, 8, 7, 0.25) 100%); }
+  .hero-copy { width: auto; margin: 0 22px; padding-bottom: 78px; }
+  .hero h1 { font-size: clamp(68px, 22vw, 105px); }
+  .hero-lead { font-size: 15px; line-height: 1.55; max-width: 95%; }
+  .hero-stamp { width: 85px; height: 85px; right: 18px; top: 22px; padding: 8px; }
+  .ticker { justify-content: flex-start; overflow-x: auto; white-space: nowrap; scrollbar-width: none; font-size: 14px; padding: 8px 16px; }
+  .ticker::-webkit-scrollbar { display: none; }
   .menu { padding-top: 36px; }
   .menu-intro { width: min(100% - 28px, 620px); padding-bottom: 34px; grid-template-columns: 100px 1fr; gap: 20px 15px; align-items: center; }
   .menu-logo { width: 100px; height: 100px; }
@@ -421,9 +851,14 @@ footer > a { color: var(--gold); text-decoration: none; text-align: right; font:
   .order-banner > img { width: 76px; height: 76px; }
   .order-banner div { flex: 1; }
   .order-banner > button { width: 100%; margin: 8px 0 0; justify-content: center; }
-  footer { padding: 45px 22px; grid-template-columns: 1fr; text-align: center; }
+  footer { padding: 45px 22px; grid-template-columns: 1fr; text-align: center; gap: 20px; }
   .footer-brand { justify-content: center; }
+  .footer-slogan-wrap { max-width: 320px; margin: 0 auto; width: 100%; }
   footer p, footer > a { margin: 0; text-align: center; }
+  .menu-letrero { padding: 20px 18px; margin-bottom: 22px; }
+  .menu-letrero-body h3 { font-size: 26px; }
+  .tu-carta-bar { padding: 14px 16px; }
+  .tu-carta-container { flex-wrap: wrap; justify-content: center; gap: 8px; }
   .cart-drawer { padding: 24px 18px; }
   .modal-backdrop { padding: 0; align-items: flex-end; }
   .dialog { width: 100%; max-height: 92svh; padding: 30px 20px 22px; border-top-width: 4px; }

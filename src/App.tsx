@@ -1,8 +1,11 @@
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  AlertTriangle,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  Flame,
   LocateFixed,
   Minus,
   NotebookPen,
@@ -15,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { DEFAULT_MENU_DATA, Dish } from "./data/menuData";
+import { getPeruDateTime, PeruDateTime } from "./utils/peruTime";
 
 const WHATSAPP_NUMBER = "51935661827";
 
@@ -61,7 +65,21 @@ export default function App() {
   const [orderType, setOrderType] = useState<OrderType | null>(null);
   const [checkout, setCheckout] = useState<CheckoutForm>(EMPTY_CHECKOUT);
   const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [peruTime, setPeruTime] = useState<PeruDateTime>(() => getPeruDateTime());
+  const [menuNoticeModalOpen, setMenuNoticeModalOpen] = useState(false);
   const categoryButtons = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPeruTime(getPeruDateTime());
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const hasUnavailableMenuItems = useMemo(() => {
+    if (peruTime.isMenuAvailable) return false;
+    return cart.some((item) => item.esMenu);
+  }, [cart, peruTime.isMenuAvailable]);
 
   const { count, total } = useMemo(() => ({
     count: cart.reduce((sum, item) => sum + item.cantidad, 0),
@@ -103,13 +121,13 @@ export default function App() {
   }, [activeCategory]);
 
   useEffect(() => {
-    const shouldLock = showCart || Boolean(pendingDish) || showCheckout;
+    const shouldLock = showCart || Boolean(pendingDish) || showCheckout || menuNoticeModalOpen;
     const previousOverflow = document.body.style.overflow;
     if (shouldLock) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [showCart, pendingDish, showCheckout]);
+  }, [showCart, pendingDish, showCheckout, menuNoticeModalOpen]);
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -117,12 +135,21 @@ export default function App() {
   };
 
   const openDishDialog = (dish: Dish, item?: CartItem) => {
+    if (dish.esMenu && !peruTime.isMenuAvailable) {
+      setMenuNoticeModalOpen(true);
+      return;
+    }
     setDishNote(item?.notas ?? "");
     setPendingDish({ dish, cartId: item?.cartId });
   };
 
   const saveDish = () => {
     if (!pendingDish) return;
+    if (pendingDish.dish.esMenu && !peruTime.isMenuAvailable) {
+      setPendingDish(null);
+      setMenuNoticeModalOpen(true);
+      return;
+    }
     const notas = dishNote.trim();
 
     if (pendingDish.cartId) {
@@ -157,6 +184,10 @@ export default function App() {
     .filter((item) => item.cantidad > 0));
 
   const startCheckout = () => {
+    if (hasUnavailableMenuItems) {
+      setMenuNoticeModalOpen(true);
+      return;
+    }
     setShowCart(false);
     setOrderType(null);
     setShowCheckout(true);
@@ -192,6 +223,10 @@ export default function App() {
 
   const sendOrder = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (hasUnavailableMenuItems) {
+      setMenuNoticeModalOpen(true);
+      return;
+    }
     if (!orderType || checkout.telefono.length !== 9) return;
 
     const itemLines = cart.flatMap((item) => {
@@ -231,10 +266,10 @@ export default function App() {
 
   return (
     <div className="site-shell">
-      <header className="topbar" id="inicio">
-        <a className="brand" href="#carta" aria-label="King Wok, ir a la carta">
+      <header className="topbar">
+        <a className="brand" href="#inicio" aria-label="King Wok, ir al inicio">
           <img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" />
-          <span><strong>KING WOK</strong><small>CHIFA · COCINA AL FUEGO</small></span>
+          <span><strong>KING WOK</strong><small>CHIFA ORIENTAL NIKKEI</small></span>
         </a>
         <a className="phone-link" href="tel:935661827"><Phone size={16} /> 935 661 827</a>
         <button className="bag-button" onClick={() => setShowCart(true)} aria-label={`Ver pedido, ${count} productos`}>
@@ -243,6 +278,25 @@ export default function App() {
       </header>
 
       <main>
+        <section className="hero" id="inicio">
+          <img src="/king-wok-hero.png" alt="King Wok - El Wok Manda" />
+          <div className="hero-shade" />
+          <div className="hero-copy">
+            <p className="eyebrow"><Flame size={15} /> SABOR CHIFA · FUEGO DE VERDAD</p>
+            <h1>EL WOK<br /><em>MANDA.</em></h1>
+            <p className="hero-lead">Chaufa, tallarines y clásicos del barrio hechos al instante, con fuego alto y corazón.</p>
+            <button className="primary-cta" onClick={() => document.getElementById("carta")?.scrollIntoView({ behavior: "smooth" })}>
+              VER LA CARTA <ChevronRight size={18} />
+            </button>
+          </div>
+          <div className="hero-stamp" title="King Wok">
+            <img src="/king-wok-logo.png" alt="King Wok Logo" className="hero-stamp-img" />
+          </div>
+          <div className="ticker">
+            <span>KING WOK</span><i>火</i><span>PIDE AL 935 661 827</span><i>火</i><span>CHIFA · BROASTER · SOPAS</span>
+          </div>
+        </section>
+
         <section className="menu" id="carta">
           <div className="menu-intro">
             <img src="/king-wok-logo.png" alt="Logo de King Wok" className="menu-logo" />
@@ -280,21 +334,65 @@ export default function App() {
                   <h2 id={`heading-${category.id}`}>{category.nombre}</h2>
                   <b>{String(categoryIndex + 1).padStart(2, "0")}</b>
                 </div>
+
+                {category.esMenu && (
+                  <div className={`menu-letrero ${peruTime.isMenuAvailable ? "open" : "closed"}`}>
+                    <div className="menu-letrero-top">
+                      <div className="menu-letrero-tag">
+                        <Clock size={16} />
+                        <span>HORARIO DEL MENÚ</span>
+                      </div>
+                      <div className={`menu-status-badge ${peruTime.isMenuAvailable ? "status-open" : "status-closed"}`}>
+                        <span className="status-dot" />
+                        <span>{peruTime.statusText}</span>
+                      </div>
+                    </div>
+                    <div className="menu-letrero-body">
+                      <h3>SOLO VÁLIDO DE LUNES A SÁBADO HASTA LAS 3:00 PM</h3>
+                      <p>
+                        {peruTime.isMenuAvailable
+                          ? `¡Menú disponible hoy! Pide antes de las 3:00 PM. Hora actual en Perú: ${peruTime.timeString12}.`
+                          : peruTime.reason}
+                      </p>
+                    </div>
+                    <div className="menu-letrero-footer">
+                      <span>🇵🇪 Hora en Perú: <strong>{peruTime.timeString12}</strong> · {peruTime.dayName}</span>
+                      {!peruTime.isMenuAvailable && (
+                        <span className="menu-closed-alert">🚫 Pedidos bloqueados fuera de horario</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div className="dish-grid">
-                  {category.items.map((dish, dishIndex) => (
-                    <article className={`dish-card ${dish.destacado ? "featured" : ""}`} key={`${dish.nombre}-${dish.descripcion ?? ""}-${dishIndex}`}>
-                      <div className="dish-number">{String(dishIndex + 1).padStart(2, "0")}</div>
-                      <div className="dish-copy">
-                        {dish.destacado && <span className="dish-badge">Favorito de la casa</span>}
-                        <h3>{dish.nombre}</h3>
-                        {dish.descripcion && <p>{dish.descripcion}</p>}
-                      </div>
-                      <div className="dish-action">
-                        <strong>{money(dish.precio)}</strong>
-                        <button onClick={() => openDishDialog(dish)} aria-label={`Agregar ${dish.nombre} al pedido`}><Plus size={18} /></button>
-                      </div>
-                    </article>
-                  ))}
+                  {category.items.map((dish, dishIndex) => {
+                    const isDishBlocked = Boolean(dish.esMenu && !peruTime.isMenuAvailable);
+                    return (
+                      <article
+                        className={`dish-card ${dish.destacado ? "featured" : ""} ${isDishBlocked ? "menu-card-disabled" : ""}`}
+                        key={`${dish.nombre}-${dish.descripcion ?? ""}-${dishIndex}`}
+                      >
+                        <div className="dish-number">{String(dishIndex + 1).padStart(2, "0")}</div>
+                        <div className="dish-copy">
+                          {dish.destacado && <span className="dish-badge">Favorito de la casa</span>}
+                          {isDishBlocked && <span className="dish-badge-closed">Fuera de horario</span>}
+                          <h3>{dish.nombre}</h3>
+                          {dish.descripcion && <p>{dish.descripcion}</p>}
+                        </div>
+                        <div className="dish-action">
+                          <strong>{money(dish.precio)}</strong>
+                          <button
+                            onClick={() => openDishDialog(dish)}
+                            className={isDishBlocked ? "btn-disabled" : ""}
+                            aria-label={isDishBlocked ? `${dish.nombre} no disponible por horario` : `Agregar ${dish.nombre} al pedido`}
+                            title={isDishBlocked ? "El Menú solo está disponible de lunes a sábado hasta las 3:00 PM" : undefined}
+                          >
+                            {isDishBlocked ? <Clock size={18} /> : <Plus size={18} />}
+                          </button>
+                        </div>
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             ))}
@@ -309,10 +407,23 @@ export default function App() {
       </main>
 
       <footer>
-        <div className="brand footer-brand"><img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" /><span><strong>KING WOK</strong><small>CHIFA · COCINA AL FUEGO</small></span></div>
-        <p>Cada plato hecho al wok, con corazón.</p>
+        <div className="brand footer-brand">
+          <img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" />
+          <span><strong>KING WOK</strong><small>CHIFA ORIENTAL NIKKEI</small></span>
+        </div>
+        <div className="footer-slogan-wrap">
+          <span className="footer-slogan-tag">SLOGAN</span>
+          <p className="footer-slogan-text">Chifa oriental nikkei</p>
+        </div>
         <a href="tel:935661827">PEDIDOS: 935 661 827</a>
       </footer>
+
+      <div className="tu-carta-bar">
+        <div className="tu-carta-container">
+          <span className="tu-carta-label">Hecho por</span>
+          <span className="tu-carta-pill">Tu Carta</span>
+        </div>
+      </div>
 
       <AnimatePresence>
         {count > 0 && !showCart && !showCheckout && !pendingDish && (
@@ -345,8 +456,23 @@ export default function App() {
                       </div>
                     ))}
                   </div>
+                  {hasUnavailableMenuItems && (
+                    <div className="cart-warning-box">
+                      <AlertTriangle size={18} />
+                      <div>
+                        <strong>Menú del Día fuera de horario</strong>
+                        <p>Los platos del menú solo se pueden pedir de lunes a sábado hasta las 3:00 PM. Por favor retíralos para poder continuar con tu pedido a la carta.</p>
+                      </div>
+                    </div>
+                  )}
                   <div className="cart-total"><span>Total</span><strong>{money(total)}</strong></div>
-                  <button className="whatsapp-button" onClick={startCheckout}>CONTINUAR PEDIDO <ChevronRight size={19} /></button>
+                  <button
+                    className={`whatsapp-button ${hasUnavailableMenuItems ? "btn-disabled" : ""}`}
+                    onClick={startCheckout}
+                    disabled={hasUnavailableMenuItems}
+                  >
+                    {hasUnavailableMenuItems ? "RETIRA EL MENÚ PARA CONTINUAR" : "CONTINUAR PEDIDO"} <ChevronRight size={19} />
+                  </button>
                 </>
               )}
             </motion.aside>
@@ -414,6 +540,34 @@ export default function App() {
                   <button className="dialog-primary" type="submit">ENVIAR PEDIDO POR WHATSAPP <ChevronRight size={18} /></button>
                 </form>
               )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {menuNoticeModalOpen && (
+          <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuNoticeModalOpen(false)}>
+            <motion.div className="dialog menu-notice-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-notice-title" initial={{ opacity: 0, y: 28, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: .98 }} onClick={(event) => event.stopPropagation()}>
+              <button className="dialog-close" onClick={() => setMenuNoticeModalOpen(false)} aria-label="Cerrar"><X /></button>
+              <span className="dialog-kicker">HORARIO DEL MENÚ</span>
+              <h2 id="menu-notice-title">MENÚ NO DISPONIBLE</h2>
+              <div className="notice-time-banner">
+                <Clock size={24} />
+                <div>
+                  <strong>Hora actual en Perú: {peruTime.timeString12} · {peruTime.dayName}</strong>
+                  <p>{peruTime.reason}</p>
+                </div>
+              </div>
+              <p className="notice-rule">
+                ⚠️ El <strong>Menú del Día</strong> (Chaufa, Aeropuerto y Tallarín con verduras) solo está habilitado para pedidos de <strong>lunes a sábado hasta las 3:00 PM</strong> (hora de Perú).
+              </p>
+              <p className="notice-sub">
+                ¡Pero no te quedes con el antojo! Puedes pedir cualquiera de nuestros deliciosos platos a la carta disponibles: Broastería, Aeropuertos especiales, Chaufas, Combinados y Lomos.
+              </p>
+              <button className="dialog-primary" onClick={() => setMenuNoticeModalOpen(false)}>
+                EXPLORAR PLATOS A LA CARTA <ChevronRight size={18} />
+              </button>
             </motion.div>
           </motion.div>
         )}
