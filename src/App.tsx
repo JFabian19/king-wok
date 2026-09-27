@@ -9,13 +9,13 @@ import {
   Flame,
   LocateFixed,
   Minus,
+  Motorbike,
   NotebookPen,
   Phone,
   Plus,
   ShoppingBag,
   Store,
   Trash2,
-  Truck,
   X,
 } from "lucide-react";
 import { DEFAULT_MENU_DATA, Dish } from "./data/menuData";
@@ -399,7 +399,11 @@ export default function App() {
                       >
                         <div className="dish-number">{String(dishIndex + 1).padStart(2, "0")}</div>
                         <div className="dish-copy">
-                          {dish.destacado && <span className="dish-badge">Favorito de la casa</span>}
+                          {dish.destacado && (
+                            <span className="dish-badge">
+                              <Flame size={11} /> Favorito de la casa
+                            </span>
+                          )}
                           {isDishBlocked && <span className="dish-badge-closed">Fuera de horario</span>}
                           <h3>{dish.nombre}</h3>
                           {dish.descripcion && <p>{dish.descripcion}</p>}
@@ -436,25 +440,51 @@ export default function App() {
           <img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" />
           <span><strong>KING WOK</strong><small>CHIFA ORIENTAL NIKKEI</small></span>
         </div>
-        <div className="footer-slogan-wrap">
-          <span className="footer-slogan-tag">SLOGAN</span>
-          <p className="footer-slogan-text">Chifa oriental nikkei</p>
+        <div className="footer-slogan-card">
+          <div className="slogan-badge-line">
+            <span className="slogan-sep" />
+            <span className="slogan-star">✦</span>
+            <span className="slogan-sep" />
+          </div>
+          <p className="footer-slogan-title">CHIFA ORIENTAL NIKKEI</p>
+          <span className="footer-slogan-sub">Sabor al Wok · Fuego de Verdad</span>
         </div>
-        <a href="tel:935661827">PEDIDOS: 935 661 827</a>
+        <a href="tel:935661827" className="footer-phone-cta">
+          <small>PEDIDOS DIRECTOS</small>
+          <strong>935 661 827</strong>
+        </a>
       </footer>
 
       <div className="tu-carta-bar">
         <div className="tu-carta-container">
           <span className="tu-carta-label">Hecho por</span>
-          <span className="tu-carta-pill">Tu Carta</span>
+          <span className="tu-carta-brand">
+            <span className="tc-part1">Tu</span>
+            <span className="tc-part2">Carta</span>
+          </span>
         </div>
       </div>
 
       <AnimatePresence>
         {count > 0 && !showCart && !showCheckout && !pendingDish && (
-          <motion.button className="floating-cart" initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} onClick={() => setShowCart(true)}>
-            <span><ShoppingBag size={20} /><b>{count}</b></span><span>VER PEDIDO</span><strong>{money(total)}</strong>
-          </motion.button>
+          <div className="floating-cart-container">
+            <motion.button
+              className="floating-cart"
+              initial={{ y: 80, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 80, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 350, damping: 25 }}
+              onClick={() => setShowCart(true)}
+              aria-label={`Ver pedido, ${count} productos`}
+            >
+              <span className="floating-cart-badge">
+                <ShoppingBag size={19} />
+                <b>{count}</b>
+              </span>
+              <span className="floating-cart-label">VER PEDIDO</span>
+              <strong className="floating-cart-total">{money(total)}</strong>
+            </motion.button>
+          </div>
         )}
       </AnimatePresence>
 
@@ -533,29 +563,70 @@ export default function App() {
                   <h2 id="checkout-title">¿CÓMO QUIERES TU PEDIDO?</h2>
                   <p>Elige una modalidad antes de enviarlo por WhatsApp.</p>
                   <div className="order-type-grid">
-                    <button onClick={() => selectOrderType("delivery")}><span><Truck size={28} /></span><strong>DELIVERY</strong><small>Lo llevamos a tu dirección</small><ChevronRight size={20} /></button>
-                    <button onClick={() => selectOrderType("pickup")}><span><Store size={28} /></span><strong>RECOJO EN TIENDA</strong><small>Te avisamos para que lo recojas</small><ChevronRight size={20} /></button>
+                    <button type="button" onClick={() => selectOrderType("delivery")}>
+                      <span className="order-type-circle">
+                        <Motorbike size={28} strokeWidth={2.3} />
+                      </span>
+                      <div className="order-type-info">
+                        <strong>DELIVERY</strong>
+                        <small>Lo llevamos a tu dirección</small>
+                      </div>
+                      <ChevronRight size={20} className="order-type-arrow" />
+                    </button>
+                    <button type="button" onClick={() => selectOrderType("pickup")}>
+                      <span className="order-type-circle">
+                        <Store size={27} strokeWidth={2.3} />
+                      </span>
+                      <div className="order-type-info">
+                        <strong>RECOJO EN TIENDA</strong>
+                        <small>Te avisamos para que lo recojas</small>
+                      </div>
+                      <ChevronRight size={20} className="order-type-arrow" />
+                    </button>
                   </div>
                 </>
               ) : (
-                <form onSubmit={sendOrder}>
-                  <button type="button" className="back-button" onClick={() => setOrderType(null)}><ChevronLeft size={17} /> CAMBIAR MODALIDAD</button>
+                <form onSubmit={sendOrder} className="checkout-form">
+                  <button type="button" className="back-button" onClick={() => setOrderType(null)}>
+                    <ChevronLeft size={15} /> CAMBIAR MODALIDAD
+                  </button>
                   <span className="dialog-kicker">{orderType === "delivery" ? "DATOS DE DELIVERY" : "DATOS PARA RECOJO"}</span>
                   <h2 id="checkout-title">{orderType === "delivery" ? "¿DÓNDE LO LLEVAMOS?" : "¿A NOMBRE DE QUIÉN?"}</h2>
                   <div className="form-grid">
-                    <label>Nombre<input required autoComplete="given-name" value={checkout.nombre} onChange={(event) => updateCheckout("nombre", event.target.value)} placeholder="Tu nombre" /></label>
-                    {orderType === "delivery" && <label>Apellido<input required autoComplete="family-name" value={checkout.apellido} onChange={(event) => updateCheckout("apellido", event.target.value)} placeholder="Tu apellido" /></label>}
-                    <label className={orderType === "pickup" ? "full-field" : ""}>Celular <small>(9 dígitos)</small><input required type="tel" inputMode="numeric" pattern="[0-9]{9}" minLength={9} maxLength={9} autoComplete="tel" value={checkout.telefono} onChange={(event) => updateCheckout("telefono", event.target.value.replace(/\D/g, "").slice(0, 9))} placeholder="987654321" /></label>
+                    <div className="name-grid-row">
+                      <label>
+                        <span>Nombre</span>
+                        <input required autoComplete="given-name" value={checkout.nombre} onChange={(event) => updateCheckout("nombre", event.target.value)} placeholder="Tu nombre" />
+                      </label>
+                      {orderType === "delivery" && (
+                        <label>
+                          <span>Apellido</span>
+                          <input required autoComplete="family-name" value={checkout.apellido} onChange={(event) => updateCheckout("apellido", event.target.value)} placeholder="Tu apellido" />
+                        </label>
+                      )}
+                    </div>
+                    <label className="full-field">
+                      <span>Celular <small>(9 dígitos)</small></span>
+                      <input required type="tel" inputMode="numeric" pattern="[0-9]{9}" minLength={9} maxLength={9} autoComplete="tel" value={checkout.telefono} onChange={(event) => updateCheckout("telefono", event.target.value.replace(/\D/g, "").slice(0, 9))} placeholder="987654321" />
+                    </label>
                     {orderType === "delivery" && (
                       <>
-                        <label className="full-field">Dirección exacta<input required autoComplete="street-address" value={checkout.direccion} onChange={(event) => updateCheckout("direccion", event.target.value)} placeholder="Av., calle, número, distrito" /></label>
-                        <label className="full-field">Referencia<input required value={checkout.referencia} onChange={(event) => updateCheckout("referencia", event.target.value)} placeholder="Ej. Frente al parque, puerta negra" /></label>
+                        <label className="full-field">
+                          <span>Dirección exacta</span>
+                          <input required autoComplete="street-address" value={checkout.direccion} onChange={(event) => updateCheckout("direccion", event.target.value)} placeholder="Av., calle, número, distrito" />
+                        </label>
+                        <label className="full-field">
+                          <span>Referencia</span>
+                          <input required value={checkout.referencia} onChange={(event) => updateCheckout("referencia", event.target.value)} placeholder="Ej. Frente al parque, puerta negra" />
+                        </label>
                         <div className="location-field full-field">
                           <button type="button" className={`location-button ${locationStatus === "success" ? "success" : ""}`} onClick={shareLocation} disabled={locationStatus === "loading"}>
-                            <LocateFixed size={21} />
-                            {locationStatus === "loading" ? "OBTENIENDO UBICACIÓN…" : locationStatus === "success" ? "UBICACIÓN EN TIEMPO REAL AGREGADA" : "COMPARTIR UBICACIÓN EN TIEMPO REAL"}
+                            <LocateFixed size={18} />
+                            <span>
+                              {locationStatus === "loading" ? "OBTENIENDO UBICACIÓN…" : locationStatus === "success" ? "UBICACIÓN AGREGADA ✓" : "COMPARTIR UBICACIÓN EN TIEMPO REAL"}
+                            </span>
                           </button>
-                          <p>Dale clic a este botón para compartir tu ubicación exacta y que tu pedido llegue más rápido.</p>
+                          <p>Dale clic para que tu pedido llegue más rápido.</p>
                           {locationStatus === "error" && <small className="form-error">No pudimos obtenerla. Activa el permiso de ubicación e inténtalo otra vez.</small>}
                         </div>
                       </>
