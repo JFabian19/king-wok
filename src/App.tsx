@@ -18,6 +18,7 @@ import {
   Store,
   Trash2,
   X,
+  ZoomIn,
 } from "lucide-react";
 import { DEFAULT_MENU_DATA, Dish } from "./data/menuData";
 import { getPeruDateTime, PeruDateTime } from "./utils/peruTime";
@@ -69,6 +70,7 @@ export default function App() {
   const [locationStatus, setLocationStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [peruTime, setPeruTime] = useState<PeruDateTime>(() => getPeruDateTime());
   const [menuNoticeModalOpen, setMenuNoticeModalOpen] = useState(false);
+  const [expandedImage, setExpandedImage] = useState<{ src: string; alt: string } | null>(null);
   const categoryButtons = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useEffect(() => {
@@ -123,13 +125,22 @@ export default function App() {
   }, [activeCategory]);
 
   useEffect(() => {
-    const shouldLock = showCart || Boolean(pendingDish) || showCheckout || menuNoticeModalOpen;
+    const shouldLock = showCart || Boolean(pendingDish) || showCheckout || menuNoticeModalOpen || Boolean(expandedImage);
     const previousOverflow = document.body.style.overflow;
     if (shouldLock) document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
     };
-  }, [showCart, pendingDish, showCheckout, menuNoticeModalOpen]);
+  }, [showCart, pendingDish, showCheckout, menuNoticeModalOpen, expandedImage]);
+
+  useEffect(() => {
+    if (!expandedImage) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpandedImage(null);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [expandedImage]);
 
   const scrollToCategory = (categoryId: string) => {
     setActiveCategory(categoryId);
@@ -270,7 +281,7 @@ export default function App() {
     <div className="site-shell">
       <header className="topbar">
         <a className="brand" href="#inicio" aria-label="King Wok, ir al inicio">
-          <img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" />
+          <img src="/king-wok-logo.webp" alt="King Wok" className="brand-logo" />
           <span><strong>KING WOK</strong><small>CHIFA ORIENTAL NIKKEI</small></span>
         </a>
         <a className="phone-link" href="tel:935661827"><Phone size={16} /> 935 661 827</a>
@@ -287,7 +298,7 @@ export default function App() {
           style={{ cursor: "pointer" }}
           aria-label="King Wok - Portada principal, toca para ir a la carta"
         >
-          <img src="/king-wok-hero.png" alt="King Wok - El Wok Manda" />
+          <img src="/king-wok-hero-hd.webp" alt="King Wok - El Wok Manda" />
           <div className="hero-shade" />
           <div className="hero-copy">
             <div className="eyebrow"><Flame size={14} /><span>SABOR CHIFA · FUEGO DE VERDAD</span></div>
@@ -295,7 +306,7 @@ export default function App() {
             <p className="hero-lead">Chaufa, tallarines y clásicos del barrio hechos al instante, con fuego alto y corazón.</p>
           </div>
           <div className="hero-stamp" title="King Wok - Chifa Oriental Nikkei">
-            <img src="/king-wok-logo.png" alt="King Wok Logo" className="hero-stamp-img" />
+            <img src="/king-wok-logo.webp" alt="King Wok Logo" className="hero-stamp-img" />
           </div>
           <div className="hero-scroll-cue">
             <span>TOCA PARA VER LA CARTA</span>
@@ -325,14 +336,14 @@ export default function App() {
 
         <section className="menu" id="carta">
           <div className="menu-intro">
-            <img src="/king-wok-logo.png" alt="Logo de King Wok" className="menu-logo" />
+            <img src="/king-wok-logo.webp" alt="Logo de King Wok" className="menu-logo" />
             <div><span className="section-kicker">CARTA 2026</span><h1>ELIGE TU<br />ANTOJO</h1></div>
             <p>Recetas contundentes, porciones generosas y ese golpe de fuego que hace único a cada plato.</p>
           </div>
 
           <div className="category-dock">
             <button className="dock-logo" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} aria-label="Volver al inicio de la carta">
-              <img src="/king-wok-logo.png" alt="" />
+              <img src="/king-wok-logo.webp" alt="" />
             </button>
             <nav className="category-nav" aria-label="Categorías de la carta">
               {DEFAULT_MENU_DATA.map((category, index) => (
@@ -384,7 +395,9 @@ export default function App() {
                     <div className="menu-letrero-footer">
                       <span>🇵🇪 Hora en Perú: <strong>{peruTime.timeString12}</strong> · {peruTime.dayName}</span>
                       {!peruTime.isMenuAvailable && (
-                        <span className="menu-closed-alert">🚫 Pedidos bloqueados fuera de horario</span>
+                        <span className="menu-closed-alert">
+                          {peruTime.isSunday ? "🚫 Cerrado los domingos" : "🚫 Menú cerrado por horario"}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -399,12 +412,18 @@ export default function App() {
                         key={`${dish.nombre}-${dish.descripcion ?? ""}-${dishIndex}`}
                       >
                         <div
-                          className="dish-media-slot"
-                          onClick={() => !isDishBlocked && openDishDialog(dish)}
+                          className={`dish-media-slot ${dish.imagen ? "has-image" : ""}`}
+                          onClick={() => dish.imagen && setExpandedImage({ src: dish.imagen, alt: dish.nombre })}
                           role="button"
-                          tabIndex={isDishBlocked ? -1 : 0}
-                          title={isDishBlocked ? "Plato fuera de horario" : `Personalizar ${dish.nombre}`}
-                          aria-label={`Espacio de imagen para ${dish.nombre}`}
+                          tabIndex={dish.imagen ? 0 : -1}
+                          onKeyDown={(event) => {
+                            if (dish.imagen && (event.key === "Enter" || event.key === " ")) {
+                              event.preventDefault();
+                              setExpandedImage({ src: dish.imagen, alt: dish.nombre });
+                            }
+                          }}
+                          title={dish.imagen ? `Ver foto completa de ${dish.nombre}` : undefined}
+                          aria-label={dish.imagen ? `Ver foto completa de ${dish.nombre}` : `Espacio de imagen para ${dish.nombre}`}
                         >
                           {dish.imagen ? (
                             <img src={dish.imagen} alt={dish.nombre} className="dish-img" />
@@ -420,7 +439,8 @@ export default function App() {
                               <Flame size={11} /> Favorito
                             </span>
                           )}
-                          {isDishBlocked && <span className="dish-badge-closed-overlay">Fuera de horario</span>}
+                          {isDishBlocked && <span className="dish-badge-closed-overlay">{peruTime.isSunday ? "Cerrado" : "Fuera de horario"}</span>}
+                          {dish.imagen && <span className="dish-zoom-hint"><ZoomIn size={14} /> Ver foto</span>}
                         </div>
 
                         <div className="dish-content">
@@ -433,8 +453,8 @@ export default function App() {
                             <button
                               onClick={() => openDishDialog(dish)}
                               className={`dish-add-btn ${isDishBlocked ? "btn-disabled" : ""}`}
-                              aria-label={isDishBlocked ? `${dish.nombre} no disponible por horario` : `Agregar ${dish.nombre} al pedido`}
-                              title={isDishBlocked ? "El Menú solo está disponible de lunes a sábado hasta las 3:00 PM" : undefined}
+                              aria-label={isDishBlocked ? (peruTime.isSunday ? `${dish.nombre}: cerrado los domingos` : `${dish.nombre}: menú cerrado por horario`) : `Agregar ${dish.nombre} al pedido`}
+                              title={isDishBlocked ? (peruTime.isSunday ? "Cerrado los domingos" : "El horario del Menú termina a las 3:00 PM") : undefined}
                             >
                               {isDishBlocked ? <Clock size={16} /> : <Plus size={18} strokeWidth={2.4} />}
                             </button>
@@ -450,7 +470,7 @@ export default function App() {
         </section>
 
         <section className="order-banner">
-          <img src="/king-wok-logo.png" alt="" />
+          <img src="/king-wok-logo.webp" alt="" />
           <div><small>¿YA ELEGISTE?</small><h2>QUE EMPIECE EL FUEGO.</h2></div>
           <button onClick={() => setShowCart(true)}>VER MI PEDIDO <ChevronRight size={18} /></button>
         </section>
@@ -458,7 +478,7 @@ export default function App() {
 
       <footer>
         <div className="brand footer-brand">
-          <img src="/king-wok-logo.png" alt="King Wok" className="brand-logo" />
+          <img src="/king-wok-logo.webp" alt="King Wok" className="brand-logo" />
           <span><strong>KING WOK</strong><small>CHIFA ORIENTAL NIKKEI</small></span>
         </div>
         <div className="footer-slogan-card">
@@ -485,6 +505,33 @@ export default function App() {
           </span>
         </div>
       </div>
+
+      <AnimatePresence>
+        {expandedImage && (
+          <motion.div
+            className="image-lightbox"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setExpandedImage(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Foto ampliada de ${expandedImage.alt}`}
+          >
+            <motion.div
+              className="image-lightbox-content"
+              initial={{ opacity: 0, scale: 0.94 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <button className="image-lightbox-close" onClick={() => setExpandedImage(null)} aria-label="Cerrar foto ampliada"><X /></button>
+              <img src={expandedImage.src} alt={expandedImage.alt} />
+              <p>{expandedImage.alt}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {count > 0 && !showCart && !showCheckout && !pendingDish && (
@@ -536,8 +583,12 @@ export default function App() {
                     <div className="cart-warning-box">
                       <AlertTriangle size={18} />
                       <div>
-                        <strong>Menú del Día fuera de horario</strong>
-                        <p>Los platos del menú solo se pueden pedir de lunes a sábado hasta las 3:00 PM. Por favor retíralos para poder continuar con tu pedido a la carta.</p>
+                        <strong>{peruTime.isSunday ? "Cerrado los domingos" : "Menú del Día cerrado"}</strong>
+                        <p>
+                          {peruTime.isSunday
+                            ? "Los domingos no atendemos. Retira estos platos del pedido y vuelve a visitarnos el lunes."
+                            : "El horario del Menú terminó a las 3:00 PM. Retira estos platos para continuar con tu pedido a la carta."}
+                        </p>
                       </div>
                     </div>
                   )}
@@ -667,8 +718,8 @@ export default function App() {
           <motion.div className="modal-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuNoticeModalOpen(false)}>
             <motion.div className="dialog menu-notice-dialog" role="dialog" aria-modal="true" aria-labelledby="menu-notice-title" initial={{ opacity: 0, y: 28, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 20, scale: .98 }} onClick={(event) => event.stopPropagation()}>
               <button className="dialog-close" onClick={() => setMenuNoticeModalOpen(false)} aria-label="Cerrar"><X /></button>
-              <span className="dialog-kicker">HORARIO DEL MENÚ</span>
-              <h2 id="menu-notice-title">MENÚ NO DISPONIBLE</h2>
+              <span className="dialog-kicker">{peruTime.isSunday ? "DÍA DE DESCANSO" : "HORARIO DEL MENÚ"}</span>
+              <h2 id="menu-notice-title">{peruTime.isSunday ? "CERRADO" : "MENÚ CERRADO"}</h2>
               <div className="notice-time-banner">
                 <Clock size={24} />
                 <div>
@@ -677,13 +728,19 @@ export default function App() {
                 </div>
               </div>
               <p className="notice-rule">
-                ⚠️ El <strong>Menú del Día</strong> (Chaufa, Aeropuerto y Tallarín con verduras) solo está habilitado para pedidos de <strong>lunes a sábado hasta las 3:00 PM</strong> (hora de Perú).
+                {peruTime.isSunday ? (
+                  <>⚠️ <strong>King Wok permanece cerrado los domingos.</strong> Este es nuestro día de descanso semanal.</>
+                ) : (
+                  <>⚠️ El <strong>Menú del Día</strong> (Chaufa, Aeropuerto y Tallarín con verduras) se atiende de <strong>lunes a sábado hasta las 3:00 PM</strong> (hora de Perú).</>
+                )}
               </p>
               <p className="notice-sub">
-                ¡Pero no te quedes con el antojo! Puedes pedir cualquiera de nuestros deliciosos platos a la carta disponibles: Broastería, Aeropuertos especiales, Chaufas, Combinados y Lomos.
+                {peruTime.isSunday
+                  ? "Te esperamos nuevamente el lunes para atender tu pedido."
+                  : "La carta regular continúa disponible después de las 3:00 PM."}
               </p>
               <button className="dialog-primary" onClick={() => setMenuNoticeModalOpen(false)}>
-                EXPLORAR PLATOS A LA CARTA <ChevronRight size={18} />
+                {peruTime.isSunday ? "ENTENDIDO" : "EXPLORAR PLATOS A LA CARTA"} <ChevronRight size={18} />
               </button>
             </motion.div>
           </motion.div>

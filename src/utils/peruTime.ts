@@ -52,7 +52,7 @@ export function getPeruDateTime(): PeruDateTime {
 
   if (isSunday) {
     statusText = "Cerrado los domingos";
-    reason = "Los domingos no se atiende menú del día. Solo platos a la carta.";
+    reason = "Los domingos no atendemos. Volvemos a recibir pedidos el lunes.";
   } else if (isAfter3PM) {
     statusText = "Cerrado por horario (pasadas las 3:00 PM)";
     reason = "El horario de menú finalizó a las 3:00 PM. Solo platos a la carta.";

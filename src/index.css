@@ -430,8 +430,9 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   justify-content: center;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
+  cursor: default;
 }
+.dish-media-slot.has-image { cursor: zoom-in; }
 .dish-media-placeholder {
   width: 100%;
   height: 100%;
@@ -482,6 +483,82 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center bottom;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.dish-card:hover .dish-img {
+  transform: scale(1.05);
+}
+
+.dish-zoom-hint {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(18, 16, 15, 0.82);
+  color: #fff8eb;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  backdrop-filter: blur(5px);
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 7, 6, 0.92);
+  backdrop-filter: blur(8px);
+  cursor: zoom-out;
+}
+
+.image-lightbox-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(92vw, 900px);
+  max-height: calc(100svh - 40px);
+  cursor: default;
+}
+
+.image-lightbox-content img {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100svh - 86px);
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.65);
+}
+
+.image-lightbox-content p {
+  margin: 10px 0 0;
+  color: #fff8eb;
+  font: 400 20px/1 "Bebas Neue", sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(10, 8, 7, 0.82);
+  color: white;
 }
 
 .dish-number-tag {
@@ -607,8 +684,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   opacity: 0.85;
   background: #f7f4ee;
 }
-.dish-card.menu-card-disabled .dish-media-slot {
+.dish-card.menu-card-disabled .dish-media-slot:not(.has-image) {
   cursor: not-allowed;
+}
+.dish-card.menu-card-disabled .dish-img {
+  filter: grayscale(0.45);
+  opacity: 0.85;
+}
+.dish-card.menu-card-disabled:hover .dish-img {
+  transform: none;
 }
 
 .order-banner {
