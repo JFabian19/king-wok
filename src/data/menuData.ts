@@ -23,7 +23,10 @@ export const DEFAULT_MENU_DATA: Category[] = [
     items: [
       { nombre: "Broaster", precio: "18", imagen: "/dishes/broaster.webp" },
       { nombre: "Alitas broaster", precio: "22", imagen: "/dishes/alitas-broaster.webp" },
-      { nombre: "Alitas con salsa", descripcion: "Tamarindo, acevichada, ostión, picante o BBQ", precio: "30", destacado: true, imagen: "/dishes/alitas-con-salsa.webp" },
+      { nombre: "Alitas con salsa", descripcion: "Tamarindo, acevichada, ostión, picante o BBQ", precio: "30", imagen: "/dishes/alitas-con-salsa.webp" },
+      { nombre: "Alitas picantes", precio: "30", imagen: "/dishes/alitas-picantes.webp" },
+      { nombre: "Alitas acevichadas", precio: "30", imagen: "/dishes/alitas-acevichadas.webp" },
+      { nombre: "Ronda de alitas", descripcion: "Lleva 4 BBQ, 4 acevichadas y 4 BBQ picantes", precio: "60", destacado: true, imagen: "/dishes/ronda-alitas.webp" },
       { nombre: "Limonkay", precio: "25", imagen: "/dishes/limonkay.webp" },
       { nombre: "Salchipapa", precio: "16", imagen: "/dishes/salchipapa.webp" },
     ],
@@ -89,7 +92,7 @@ export const DEFAULT_MENU_DATA: Category[] = [
     sello: "Fuego alto",
     items: [
       { nombre: "Lomo saltado montado", precio: "27", destacado: true, imagen: "/dishes/lomo-montado.webp" },
-      { nombre: "Lomo de carne", precio: "22", imagen: "/dishes/lomo-pollo-carne-cliente.webp" },
+      { nombre: "Lomo de carne", precio: "22", imagen: "/dishes/lomo-carne.webp" },
       { nombre: "Lomo de pollo", precio: "20", imagen: "/dishes/lomo-pollo-carne-cliente.webp" },
       { nombre: "Lomo de pollo y carne", precio: "25", imagen: "/dishes/lomo-pollo-mixto.webp" },
     ],
