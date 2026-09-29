@@ -509,10 +509,26 @@ export default function App() {
           <p className="footer-slogan-title">CHIFA ORIENTAL NIKKEI</p>
           <span className="footer-slogan-sub">Sabor al Wok · Fuego de Verdad</span>
         </div>
-        <a href="tel:935661827" className="footer-phone-cta">
-          <small>PEDIDOS DIRECTOS</small>
-          <strong>935 661 827</strong>
-        </a>
+        <div className="footer-contact">
+          <a href="tel:935661827" className="footer-phone-cta">
+            <small>PEDIDOS DIRECTOS</small>
+            <strong>935 661 827</strong>
+          </a>
+          <div className="footer-socials" aria-label="Redes sociales">
+            <button type="button" className="footer-social-button" aria-label="Facebook, próximamente" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 8h3V4h-3c-3.31 0-6 2.69-6 6v2H5v4h3v8h4v-8h3l1-4h-4v-2c0-1.1.9-2 2-2Z" />
+              </svg>
+            </button>
+            <button type="button" className="footer-social-button" aria-label="Instagram, próximamente" disabled>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4.25" />
+                <circle cx="17.35" cy="6.65" r="1" className="social-icon-fill" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </footer>
 
       <div className="tu-carta-bar">
